@@ -1,7 +1,9 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 
 //  分离YUV420P像素数据中的Y、U、V分量
-
 //////////////////////////////////////////
 // split Y,U,V planes in YUV420P file
 // @param url Location of Input YUV file
@@ -9,17 +11,17 @@
 // @param height Height of Input YUV file
 // @param num Number of frames to process
 //////////////////////////////////////////
-int Split_yuv420(char *url,int width,int height,int num)
+int Split_yuv420(const char *url,int width,int height,int num)
 {
-    file *fp = fopen(url,"rb+");
+    FILE *fp = fopen(url,"rb+");
     if(fp == NULL)
     {
        perror("Error opening file");
        return -1;  
     }
-    file *fp_y = fopen("output_420_y.yuv ","wb+");
-    file *fp_u = fopen("output_420_u.yuv","wb+");
-    file *fp_v = fopen("output_420_v.yuv","wb+");
+    FILE *fp_y = fopen("output_420_y.yuv","wb+");
+    FILE *fp_u = fopen("output_420_u.yuv","wb+");
+    FILE *fp_v = fopen("output_420_v.yuv","wb+");
 
      int frames_y = width * height;
     // size for yuv420
@@ -40,16 +42,19 @@ int Split_yuv420(char *url,int width,int height,int num)
     // then a frame of YUV420P pixels takes up w*h*3/2 Byte of data.
     // The first w*h Byte stores Y, the next w*h*1/4 Byte stores U,
     // and the last w*h*1/4 Byte stores V.
+    // output_420_y.y：256x256。
+    // output_420_u.y：128x128。
+    // output_420_v.y：128x128。
 
     for(int i = 0;i < num;i++)
     {
         fread(pic,1,size,fp);
         // Y
-        fread(pic,1,frames_y,fp_y);
+        fwrite(pic,1,frames_y,fp_y);
         // U
-        fread(pic+frames_y,1,frames_y/4,fp_u);
+        fwrite(pic+frames_y,1,frames_y/4,fp_u);
         // V
-        fread(pic+frames_y*5/4,1,frames_y/4,fp_v);
+        fwrite(pic+frames_y*5/4,1,frames_y/4,fp_v);
     }
 
     free(pic);
@@ -63,8 +68,70 @@ int Split_yuv420(char *url,int width,int height,int num)
 
 
 
-
 //  分离YUV444P像素数据中的Y、U、V分量
+//////////////////////////////////////////
+// split Y,U,V planes in YUV420P file
+// @param url Location of Input YUV file
+// @param width Width of Input YUV file
+// @param height Height of Input YUV file
+// @param num Number of frames to process
+//////////////////////////////////////////
+int Split_yuv444(const char *url,int width,int height,int num)
+{
+    FILE *fp = fopen(url,"rb+");
+    if(fp == NULL)
+    {
+       perror("Error opening file");
+       return -1;  
+    }
+    FILE *fp_y = fopen("output_444_y.yuv","wb+");
+    FILE *fp_u = fopen("output_444_u.yuv","wb+");
+    FILE *fp_v = fopen("output_444_v.yuv","wb+");
+
+     int frames_y = width * height;
+    // size for yuv424
+    int size = frames_y * 3;
+    
+    unsigned char *pic = (unsigned char*)malloc(size);
+    if (pic == NULL) {
+        perror("Memory allocation failed");
+        fclose(fp);
+        fclose(fp_y);
+        fclose(fp_u);
+        fclose(fp_v);
+        return -1;
+    }
+
+    // [------Y------|------U------|------V------]
+    // If the video frame width and height are w and h, respectively,
+    // then a frame of YUV444P pixels takes up w*h Byte of data.
+    // The first w*h Byte stores Y, the next w*h Byte stores U,
+    // and the last w*h*1/4 Byte stores V.
+    // output_420_y.y：256x256。
+    // output_420_u.y：256x256。
+    // output_420_v.y：256x256。
+
+    for(int i = 0;i < num;i++)
+    {
+        fread(pic,1,size,fp);
+        // Y
+        fwrite(pic,1,frames_y,fp_y);
+        // U
+        fwrite(pic+frames_y,1,frames_y,fp_u);
+        // V
+        fwrite(pic+frames_y*2,1,frames_y,fp_v);
+    }
+
+    free(pic);
+    fclose(fp);
+    fclose(fp_y);
+    fclose(fp_u);
+    fclose(fp_v);
+
+    return 0;
+}
+
+
 
 //  将YUV420P像素数据去掉颜色（变成灰度图）
 //  将YUV420P像素数据的亮度减半
@@ -81,8 +148,7 @@ int Split_yuv420(char *url,int width,int height,int num)
 
 int main()
 {
-
-
+    Split_yuv420("./lena_256x256_yuv420p.yuv",256,256,1);
 
     return 0;
 }
