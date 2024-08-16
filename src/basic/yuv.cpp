@@ -3,6 +3,7 @@
 #include <string.h>
 
 
+
 //  分离YUV420P像素数据中的Y、U、V分量
 //////////////////////////////////////////
 // split Y,U,V planes in YUV420P file
@@ -13,15 +14,16 @@
 //////////////////////////////////////////
 int Split_yuv420(const char *url,int width,int height,int num)
 {
+    printf("%s\n", url); 
     FILE *fp = fopen(url,"rb+");
     if(fp == NULL)
     {
        perror("Error opening file");
        return -1;  
     }
-    FILE *fp_y = fopen("output_420_y.yuv","wb+");
-    FILE *fp_u = fopen("output_420_u.yuv","wb+");
-    FILE *fp_v = fopen("output_420_v.yuv","wb+");
+    FILE *fp_y = fopen("../../output/basic/data/output_420_y.yuv","wb+");
+    FILE *fp_u = fopen("../../output/basic/data/output_420_u.yuv","wb+");
+    FILE *fp_v = fopen("../../output/basic/data/output_420_v.yuv","wb+");
 
      int frames_y = width * height;
     // size for yuv420
@@ -78,6 +80,7 @@ int Split_yuv420(const char *url,int width,int height,int num)
 //////////////////////////////////////////
 int Split_yuv444(const char *url,int width,int height,int num)
 {
+    
     FILE *fp = fopen(url,"rb+");
     if(fp == NULL)
     {
@@ -148,7 +151,7 @@ int Split_yuv444(const char *url,int width,int height,int num)
 
 int main()
 {
-    Split_yuv420("./lena_256x256_yuv420p.yuv",256,256,1);
-
+    Split_yuv420("./home/shaokai/Desktop/work/vscode/Media_little_white_tutorial/res/basic/lena_256x256_yuv420p.yuv",256,256,1);
+    // Split_yuv444("./lena_256x256_yuv420p.yuv",256,256,1);
     return 0;
 }
