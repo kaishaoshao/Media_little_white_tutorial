@@ -21,17 +21,17 @@ int Split_yuv420(const char *url,int width,int height,int num)
        perror("Error opening file");
        return -1;  
     }
-    FILE *fp_y = fopen("../../output/basic/data/output_420_y.yuv","wb+");
-    FILE *fp_u = fopen("../../output/basic/data/output_420_u.yuv","wb+");
-    FILE *fp_v = fopen("../../output/basic/data/output_420_v.yuv","wb+");
-
+    FILE *fp_y = fopen("../../output/basic/pic/output_420_y.y","wb+");
+    FILE *fp_u = fopen("../../output/basic/pic/output_420_u.y","wb+");
+    FILE *fp_v = fopen("../../output/basic/pic/output_420_v.y","wb+");
+    
      int frames_y = width * height;
     // size for yuv420
     int size = frames_y * 3 / 2;
     
     unsigned char *pic = (unsigned char*)malloc(size);
     if (pic == NULL) {
-        perror("Memory allocation failed");
+        perror("Memory allocation failed");  
         fclose(fp);
         fclose(fp_y);
         fclose(fp_u);
@@ -70,9 +70,8 @@ int Split_yuv420(const char *url,int width,int height,int num)
 
 
 
-//  分离YUV444P像素数据中的Y、U、V分量
 //////////////////////////////////////////
-// split Y,U,V planes in YUV420P file
+// split Y,U,V planes in YUV444P file
 // @param url Location of Input YUV file
 // @param width Width of Input YUV file
 // @param height Height of Input YUV file
@@ -87,12 +86,12 @@ int Split_yuv444(const char *url,int width,int height,int num)
        perror("Error opening file");
        return -1;  
     }
-    FILE *fp_y = fopen("output_444_y.yuv","wb+");
-    FILE *fp_u = fopen("output_444_u.yuv","wb+");
-    FILE *fp_v = fopen("output_444_v.yuv","wb+");
+    FILE *fp_y = fopen("../../output/basic/pic/output_444_y.y","wb+");
+    FILE *fp_u = fopen("../../output/basic/pic/output_444_u.y","wb+");
+    FILE *fp_v = fopen("../../output/basic/pic/output_444_v.y","wb+");
 
      int frames_y = width * height;
-    // size for yuv424
+    // size for yuv444
     int size = frames_y * 3;
     
     unsigned char *pic = (unsigned char*)malloc(size);
@@ -135,8 +134,55 @@ int Split_yuv444(const char *url,int width,int height,int num)
 }
 
 
+//////////////////////////////////////////
+// Convert YUV420P file to gray picture
+// @param url Location of Input YUV file
+// @param width Width of Input YUV file
+// @param height Height of Input YUV file
+// @param num Number of frames to process
+//////////////////////////////////////////
+int Convert_yuv420_gray(const char *url,int width,int height,int num)
+{ 
+    FILE *fp = fopen(url,"rb+");
+    FILE *fp_g = fopen("../../output/basic/pic/output_gray.yuv","wb+");
+    if(fp == NULL || fp_g == NULL)
+    {
+       perror("Error opening file");
+       return -1;  
+    }
+    int frames_y = width * height;
+    // size for yuv420
+    int size = frames_y * 3 / 2;
+    
+    unsigned char *pic = (unsigned char*)malloc(size);
+    if (pic == NULL) {
+        perror("Memory allocation failed");
+        fclose(fp);
+        fclose(fp_g);
+        return -1;
+    }
 
-//  将YUV420P像素数据去掉颜色（变成灰度图）
+    // To turn YUV format pixel data into grayscale images, 
+    // you only need to set U and V components to 128.
+    // Because U and V are the biased chromaticity components in the image.
+    // The chromaticity component ranges from -128 to 127 before bias processing, 
+    // when colorless corresponds to a "0" value. After bias, 
+    // the color component value becomes 0 to 255, and the colorless corresponding is 128
+    for(int i = 0;i < num;i++)
+    {
+        fread(pic,1,size,fp);
+        memset(pic + frames_y,128,frames_y/2);
+        fwrite(pic,1,size,fp_g);
+    }
+
+    free(pic);
+    fclose(fp);
+    fclose(fp_g);
+
+    return 0;
+}
+
+
 //  将YUV420P像素数据的亮度减半
 //  将YUV420P像素数据的周围加上边框
 //  生成YUV420P格式的灰阶测试图
@@ -147,11 +193,10 @@ int Split_yuv444(const char *url,int width,int height,int num)
 //  生成RGB24格式的彩条测试图
 
 
-
-
-int main()
+int main(int argc,char* argv[])
 {
-    Split_yuv420("./home/shaokai/Desktop/work/vscode/Media_little_white_tutorial/res/basic/lena_256x256_yuv420p.yuv",256,256,1);
-    // Split_yuv444("./lena_256x256_yuv420p.yuv",256,256,1);
+    // Split_yuv420("../../res/basic/pic/lena_256x256_yuv420p.yuv",256,256,1);
+    // Split_yuv444("../../res/basic/pic/lena_256x256_yuv444p.yuv",256,256,1);
+    // Convert_yuv420_gray("../../res/basic/pic/lena_256x256_yuv420p.yuv",256,256,1);
     return 0;
-}
+}  
