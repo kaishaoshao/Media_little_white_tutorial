@@ -228,10 +228,114 @@ int Halfy_yuv420(const char *url, int width, int height,int num){
 	return 0;
 }
 
-//  将YUV420P像素数据的周围加上边框
+
+//////////////////////////////////////////
+// Add border for YUV420P file
+// @param url Location of Input YUV file
+// @param width Width of Input YUV file
+// @param height Height of Input YUV file
+// @param num Number of frames to process
+//////////////////////////////////////////
+int Border_yuv420(const char *url, int width, int height,int border,int num){
+	FILE *fp=fopen(url,"rb+");
+	FILE *fp_b=fopen("../../output/basic/pic/output_border.yuv","wb+");
+ 
+	int frames_y = width * height;
+    // size for yuv420
+    int size = frames_y * 3 / 2;
+    unsigned char *pic = (unsigned char*)malloc(size);
+    
+    // The value of Y is set to the maximum value 
+    // of 255 for pixels within the border of the image
+	for(int i = 0;i < num;i++){
+		fread(pic,1,size,fp);
+		//Y
+		for(int j = 0;j < height;j++){
+			for(int k = 0;k < width;k++){
+				if(k < border || k > (width-border)|| j < border|| j > (height-border))
+                {
+					pic[j*width+k]=255;
+				}
+			}
+		}
+		fwrite(pic,1,size,fp1);
+	}
+ 
+	free(pic);
+	fclose(fp);
+	fclose(fp_b);
+ 
+	return 0;
+}
 
 
-//  生成YUV420P格式的灰阶测试图
+///////////////////////////////////////////////
+// Generate YUV420P gray scale bar.
+// @param width    Width of Output YUV file.
+// @param height   Height of Output YUV file.
+// @param ymin     Max value of Y
+// @param ymax     Min value of Y
+// @param barnum   Number of bars
+// @param url_out  Location of Output YUV file.
+///////////////////////////////////////////////
+int Graybar_yuv420(int width, int height,int ymin,int ymax,int barnum,char *url_out){
+	int barwidth;
+	float lum_inc;
+	unsigned char lum_temp;
+	int uv_width,uv_height;
+	FILE *fp=NULL;
+	unsigned char *data_y=NULL;
+	unsigned char *data_u=NULL;
+	unsigned char *data_v=NULL;
+	int t=0,i=0,j=0;
+ 
+	barwidth = width / barnum;      
+	lum_inc=((float)(ymax-ymin))/((float)(barnum-1));
+	uv_width=width/2;
+	uv_height=height/2;
+ 
+	data_y=(unsigned char *)malloc(width*height);
+	data_u=(unsigned char *)malloc(uv_width*uv_height);
+	data_v=(unsigned char *)malloc(uv_width*uv_height);
+ 
+	if((fp=fopen(url_out,"wb +"))==NULL){
+ 		return -1;
+	}
+ 
+	//Output Info
+	printf("Y, U, V value from picture's left to right:\n");
+	for(t=0;t<(width/barwidth);t++){
+		lum_temp=ymin+(char)(t*lum_inc);
+		printf("%3d, 128, 128\n",lum_temp);
+	}
+	//Gen Data
+	for(j=0;j<height;j++){
+		for(i=0;i<width;i++){
+			t=i/barwidth;
+			lum_temp=ymin+(char)(t*lum_inc);
+			data_y[j*width+i]=lum_temp;
+		}
+	}
+	for(j=0;j<uv_height;j++){
+		for(i=0;i<uv_width;i++){
+			data_u[j*uv_width+i]=128;
+		}
+	}
+	for(j=0;j<uv_height;j++){
+		for(i=0;i<uv_width;i++){
+			data_v[j*uv_width+i]=128;
+		}
+	}
+	fwrite(data_y,width*height,1,fp);
+	fwrite(data_u,uv_width*uv_height,1,fp);
+	fwrite(data_v,uv_width*uv_height,1,fp);
+	fclose(fp);
+	free(data_y);
+	free(data_u);
+	free(data_v);
+	return 0;
+}
+
 //  计算两个YUV420P像素数据的PSNR
 //  分离RGB24像素数据中的R、G、B分量
 //  将RGB24格式像素数据封装为BMP图像
@@ -245,6 +349,6 @@ int main(int argc,char* argv[])
     // Split_yuv444("../../res/basic/pic/lena_256x256_yuv444p.yuv",256,256,1);
     // Convert_yuv420_gray("../../res/basic/pic/lena_256x256_yuv420p.yuv",256,256,1);
     // Halfy_yuv420("../../res/basic/pic/lena_256x256_yuv420p.yuv",256,256,1);
-
+    // Border_yuv420("../../res/basic/pic/lena_256x256_yuv420p.yuv",256,256,20,1);
     return 0;
 }  
