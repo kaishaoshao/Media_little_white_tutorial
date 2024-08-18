@@ -182,9 +182,55 @@ int Convert_yuv420_gray(const char *url,int width,int height,int num)
     return 0;
 }
 
+//////////////////////////////////////////
+// Halve Y value of YUV420P file
+// @param url Location of Input YUV file
+// @param width Width of Input YUV file
+// @param height Height of Input YUV file
+// @param num Number of frames to process
+//////////////////////////////////////////
+int Halfy_yuv420(const char *url, int width, int height,int num){
+	FILE *fp=fopen(url,"rb+");
+	FILE *fp_h=fopen("../../output/basic/pic/output_half.yuv","wb+");
+    if(fp == NULL || fp_h == NULL)
+    {
+       perror("Error opening file");
+       return -1;  
+    }
+	int frames_y = width * height;
+    // size for yuv420
+    int size = frames_y * 3 / 2;
+    unsigned char *pic = (unsigned char*)malloc(size);
+    if (pic == NULL) {
+        perror("Memory allocation failed");
+        fclose(fp);
+        fclose(fp_h);
+        return -1;
+    }
+    // If you want to halve the brightness of the image, 
+    // just take out the Y value of each pixel of the image 
+    // and divide it by 2. Each Y value of the image occupies 
+    // 1 Byte and ranges from 0 to 255, corresponding to the 
+    // unsigned char data type in the C language
+	for(int i=0;i < num;i++){
+		fread(pic,1,size,fp);
+		for(int j=0;j < frames_y;j++){
+			unsigned char temp=pic[j]/2;
+			pic[j]=temp;
+		}
+		fwrite(pic,1,size,fp_h);
+	}
 
-//  将YUV420P像素数据的亮度减半
+	free(pic);
+	fclose(fp);
+	fclose(fp_h);
+ 
+	return 0;
+}
+
 //  将YUV420P像素数据的周围加上边框
+
+
 //  生成YUV420P格式的灰阶测试图
 //  计算两个YUV420P像素数据的PSNR
 //  分离RGB24像素数据中的R、G、B分量
@@ -198,5 +244,7 @@ int main(int argc,char* argv[])
     // Split_yuv420("../../res/basic/pic/lena_256x256_yuv420p.yuv",256,256,1);
     // Split_yuv444("../../res/basic/pic/lena_256x256_yuv444p.yuv",256,256,1);
     // Convert_yuv420_gray("../../res/basic/pic/lena_256x256_yuv420p.yuv",256,256,1);
+    // Halfy_yuv420("../../res/basic/pic/lena_256x256_yuv420p.yuv",256,256,1);
+
     return 0;
 }  
