@@ -40,6 +40,8 @@ ffmpeg -i juren.bmp juren.jpg
 
 
 
+
+
 ## YUV
 
     YUV色彩空间适合用于编码和存储，因此在在存储和编码之前，RGB 图像要转换为 YUV 图像，而 YUV 图像在 显示之前通常有必要转换回 RGB。
@@ -49,7 +51,7 @@ ffmpeg -i juren.bmp juren.jpg
 **
     色度感知** 包含两个维度： **色调** （Hue）和  **色饱和度** （saturation）。色调是由光波的峰值定义的，描述的是光的颜色。色饱和度是由光波的谱宽定义的，描述的是光的纯度。
 
-因此 HVS 对色彩的感知主要有 3个属性：亮度（luminance），色调（Hue）和 色饱和度（saturation）。也就是 YUV 色彩空间，Y 代表 亮度，U代表色调，V代表色饱和度。  
+因此 HVS 对色彩的感知主要有 3个属性：亮度（luminance），色调（Hue）和 色饱和度（saturation）。也就是 YUV 色彩空间，Y 代表 亮度，U代表色调，V代表色饱和度。
 
     经过大量研究实验表明，**视觉系统 对 色度 的敏感度 是远小于 亮度的** 。所以可以对 色度 采用更小的采样率来压缩数据，对亮度采用正常的采样率即可，这样压缩数据不会对视觉体验产生太大的影响。简单来说就是用更少的数据/信息来表达 色度（chroma），用更多的数据/信息来表达 亮度（luminance）。
 
@@ -57,10 +59,9 @@ ffmpeg -i juren.bmp juren.jpg
 
    YIQ 适用于NTSC彩色电视制式
 
-    YUV 适用于PAL和SECAM彩色电视制式
+   YUV 适用于PAL和SECAM彩色电视制式
 
-    YCbCr适用于计算机用的显示器
-
+   YCbCr适用于计算机用的显示器
 
 YUV 里面的 U 就是 Cb ，术语是  **色调** （Hue）。V 就是 Cr ，术语是  **色饱和度** （saturation）。
 
@@ -83,3 +84,158 @@ Cb 代表 蓝色 色度的分量，是通过 RGB 里面的 B 的值 减去 Y 的
 Cr 代表 红色 色度的分量，是通过 RGB 里面的 R 的值 减去 Y 的值得到的。
 
 Cg 代表 绿色色 色度的分量，是通过 RGB 里面的 G 的值 减去 Y 的值得到的。
+
+### YUV420/YUV422/YUV444介绍
+
+1. YUV444
+   这个格式的占用空间最大，每一个Y分量用一组UV分量，                                                       单个像素占用空间为1byte(Y)+1byte(U)+1byte(V)=3byte										单帧占用空间为：frameSize = frameWidth * frameHeight * 3(byte)					所以YUV里面的各个分量比是1：1：1；
+2. YUV422
+   YUV422是每两个Y分量共用一个UV分量，所以一个像素占用2byte,                                       单个像素占用空间为：1byte(Y) + 1/2byte(U)+1/2byte(V)=2byte;                                  单帧占用空间：frameSize = frameWidth * frameHeight * 2(byte)
+3. YUV420
+   YUV420每四个Y分量公用一个UV分量，所以每个像素点占用1.5个byte空间，
+   单个像素占用空间为：1byte(Y) + 1/4byte(U)+1/4byte(V) =1.5byte
+   单帧占用空间：
+   frameSize = frameWidth * frameHeight*1.5(byte)
+
+
+### 具体文件格式
+
+[参考知乎博客链接](https://www.zhihu.com/search?type=content&q=YUV420%E5%92%8CYUV444%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F%E8%AF%A6%E8%A7%A3)
+
+![1725428796479](image/basic/1725428796479.png)
+
+1. l420(属于YUV420 Plannar)
+   数据分开存放，先是width * height长度的Y，后面跟着width * height * 0.25长度的U,最后是width * height * 0.25的V
+
+   ```
+   YYYY YYYY
+   YYYY YYYY
+   UUUU VVVV
+   ```
+2. YV12(属于YUV420 Plannar)
+   YV12的数据与l42不同的是，先是width * height长度的Y，后面跟着width * height * 0.25长度的V,最后才是width * height * 0.25的U
+
+   ```
+   YYYY YYYY
+   YYYY YYYY
+   VVVV UUUU
+
+   ```
+3. NV12(属于 YUV 420 Semi-Planar)
+   Y 分量单独存放，UV 分量交错存放，UV 在排列的时候，从 U 开始。总长度为 w * h * 1.5。
+
+   ```
+   YYYY YYYY
+   YYYY YYYY
+   UVUV UVUV
+   ```
+4. NV21 （属于 YUV 420 Semi-Planar）
+
+   NV21 是 YUV 420 Semi-Planar 的一种，Y 分量单独存放，UV 分量交错存放，与 NV12 不同的是，UV 在排列的时候，从 V 开始。总长度为 w * h * 1.5。
+
+   ```
+   YYYY YYYY
+   YYYY YYYY
+   VUVU VUVU
+
+   ```
+5. l422(属于YUV 422 Plannar)
+
+   I422 是 YUV 422 Planar 的一种，YUV 分量分别存放，先是 w * h 长度的 Y，后面跟 w * h * 0.5 长度的 U， 最后是 w * h * 0.5 长度的 V，总长度为 w * h * 2。
+
+   ```
+   YYYY YYYY
+   YYYY YYYY
+   UUUU UUUU
+   VVVV VVVV
+   ```
+6. YV16（属于 YUV 422 Plannar）
+   YV16 是 YUV 422 Planar 的一种，YUV 分量分别存放，先是 w * h 长度的 Y，后面跟 w * h * 0.5 长度的 V， 最后是 w * h * 0.5 长度的 U，总长度为 w * h * 2。与 I422 不同的是，YV16 是先 V 后 U。
+
+   ```
+   YYYY YYYY
+   YYYY YYYY
+   VVVV VVVV
+   UUUU UUUU
+   ```
+7. NV16（属于 YUV 422 Semi-Planar）
+   NV16 是 YUV 422 Semi-Planar 的一种，Y 分量单独存放，UV 分量交错存放，UV 在排列的时候，从 U 开始。总长度为 w * h * 2。
+
+   ```
+   YYYY YYYY
+   YYYY YYYY
+   UVUV UVUV
+   UVUV UVUV
+   ```
+8. NV61（属于 YUV 422 Semi-Planar）
+   NV61 是 YUV 422 Semi-Planar 的一种，Y 分量单独存放，UV 分量交错存放，UV 在排列的时候，从 V 开始。总长度为 w * h * 2。
+
+   ```
+   YYYY YYYY
+   YYYY YYYY
+   VUVU VUVU
+   VUVU VUVU
+
+   ```
+9. YUVY（属于 YUV 422 Interleaved）
+   YUVY 属于 YUV 422 Interleaved 的一种。事实上，Interleaved 是属于 Packed 的，但是在 422 中，用 Interleaved 更加形象一些。在 Packed 内部，YUV 的排列顺序是 Y U V Y，两个 Y 共用一组 UV。
+
+   ```
+   YUVY YUVY
+   YUVY YUVY
+   YUVY YUVY
+   YUVY YUVY
+   ```
+10. VYUY（属于 YUV 422 Interleaved）
+    VYUY 属于 YUV 422 Interleaved 的一种。在 Packed 内部，YUV 的排列顺序是 VYUY，两个 Y 共用一组 UV。
+
+    ```
+    VYUY VYUY
+    VYUY VYUY
+    VYUY VYUY
+    VYUY VYUY
+    ```
+11. UYVY（属于 YUV 422 Interleaved）
+    UYVY 属于 YUV 422 Interleaved 的一种。在 Packed 内部，YUV 的排列顺序是 UYVY，两个 Y 共用一组 UV。
+
+    ```
+    UYVY UYVY
+    UYVY UYVY
+    UYVY UYVY
+    UYVY UYVY
+    ```
+12. I444（属于 YUV 444 Plannar）
+    I444 属于 YUV 444 Plannar 的一种。YUV 分量分别存放，先是 w * h 长度的 Y，后面跟 w * h 长度的 U， 最后是 w * h 长度的 V，总长度为 w * h * 3。
+
+    ```
+    YYYY YYYY
+    UUUU UUUU
+    VVVV VVVV
+    ```
+13. YV24（属于 YUV 444 Plannar）
+    YV24 属于 YUV 444 Plannar 的一种。YUV 分量分别存放，先是 w * h 长度的 Y，后面跟 w * h 长度的 V， 最后是 w * h 长度的 U，总长度为 w * h * 3。与 I444 不同的是，YV24 是先排列 V。
+
+    ```
+    YYYY YYYY
+    VVVV VVVV
+    UUUU UUUU
+    ```
+14. NV24（属于 YUV 444 Semi-Planar）
+    NV24 是 YUV 444 Semi-Planar 的一种，Y 分量单独存放，UV 分量交错存放，UV 在排列的时候，从 U 开始。总长度为 w * h * 3。
+
+    ```
+    YYYY YYYY
+    UVUV UVUV
+    UVUV UVUV
+    ```
+15. YUV 444（属于 YUV 444 Semi-Planar）
+
+    YUV444是YUV顺序存放
+
+    ```
+    YUV YUV YUV
+    YUV YUV YUV
+    ```
+
+
+## YUV和RGB转换
