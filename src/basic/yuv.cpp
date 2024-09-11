@@ -7,14 +7,13 @@
 //  分离YUV420P像素数据中的Y、U、V分量
 //////////////////////////////////////////
 // split Y,U,V planes in YUV420P file
-// @param url Location of Input YUV file
-// @param width Width of Input YUV file
-// @param height Height of Input YUV file
-// @param num Number of frames to process
+// @param url       Location of Input YUV file
+// @param width     Width of Input YUV file
+// @param height    Height of Input YUV file
+// @param num       Number of frames to process
 //////////////////////////////////////////
 int Split_yuv420(const char *url,int width,int height,int num)
 {
-    printf("%s\n", url); 
     FILE *fp = fopen(url,"rb+");
     if(fp == NULL)
     {
@@ -40,10 +39,10 @@ int Split_yuv420(const char *url,int width,int height,int num)
     }
 
     // [------Y------|---U---|---V---]
-    // If the video frame width and height are w and h, respectively,
-    // then a frame of YUV420P pixels takes up w*h*3/2 Byte of data.
-    // The first w*h Byte stores Y, the next w*h*1/4 Byte stores U,
-    // and the last w*h*1/4 Byte stores V.
+    // If the video frame width and height are width and height, respectively,
+    // then a frame of YUV420P pixels takes up width*height*3/2 Byte of data.
+    // The first width*height Byte stores Y, the next width*height*1/4 Byte stores U,
+    // and the last width*height*1/4 Byte stores V.
     // output_420_y.y：256x256。
     // output_420_u.y：128x128。
     // output_420_v.y：128x128。
@@ -72,10 +71,10 @@ int Split_yuv420(const char *url,int width,int height,int num)
 
 //////////////////////////////////////////
 // split Y,U,V planes in YUV444P file
-// @param url Location of Input YUV file
-// @param width Width of Input YUV file
-// @param height Height of Input YUV file
-// @param num Number of frames to process
+// @param url       Location of Input YUV file
+// @param width     Width of Input YUV file
+// @param height    Height of Input YUV file
+// @param num       Number of frames to process
 //////////////////////////////////////////
 int Split_yuv444(const char *url,int width,int height,int num)
 {
@@ -105,10 +104,10 @@ int Split_yuv444(const char *url,int width,int height,int num)
     }
 
     // [------Y------|------U------|------V------]
-    // If the video frame width and height are w and h, respectively,
-    // then a frame of YUV444P pixels takes up w*h Byte of data.
-    // The first w*h Byte stores Y, the next w*h Byte stores U,
-    // and the last w*h*1/4 Byte stores V.
+    // If the video frame width and height are width and height, respectively,
+    // then a frame of YUV444P pixels takes up width*height Byte of data.
+    // The first width*height Byte stores Y, the next width*height Byte stores U,
+    // and the last width*height*1/4 Byte stores V.
     // output_420_y.y：256x256。
     // output_420_u.y：256x256。
     // output_420_v.y：256x256。
@@ -136,10 +135,10 @@ int Split_yuv444(const char *url,int width,int height,int num)
 
 //////////////////////////////////////////
 // Convert YUV420P file to gray picture
-// @param url Location of Input YUV file
-// @param width Width of Input YUV file
-// @param height Height of Input YUV file
-// @param num Number of frames to process
+// @param url       Location of Input YUV file
+// @param width     Width of Input YUV file
+// @param height    Height of Input YUV file
+// @param num       Number of frames to process
 //////////////////////////////////////////
 int Convert_yuv420_gray(const char *url,int width,int height,int num)
 { 
@@ -184,10 +183,10 @@ int Convert_yuv420_gray(const char *url,int width,int height,int num)
 
 //////////////////////////////////////////
 // Halve Y value of YUV420P file
-// @param url Location of Input YUV file
-// @param width Width of Input YUV file
-// @param height Height of Input YUV file
-// @param num Number of frames to process
+// @param url       Location of Input YUV file
+// @param width     Width of Input YUV file
+// @param height    Height of Input YUV file
+// @param num       Number of frames to process
 //////////////////////////////////////////
 int Halfy_yuv420(const char *url, int width, int height,int num){
 	FILE *fp=fopen(url,"rb+");
@@ -231,10 +230,10 @@ int Halfy_yuv420(const char *url, int width, int height,int num){
 
 //////////////////////////////////////////
 // Add border for YUV420P file
-// @param url Location of Input YUV file
-// @param width Width of Input YUV file
-// @param height Height of Input YUV file
-// @param num Number of frames to process
+// @param url       Location of Input YUV file
+// @param width     Width of Input YUV file
+// @param height    Height of Input YUV file
+// @param num       Number of frames to process
 //////////////////////////////////////////
 int Border_yuv420(const char *url, int width, int height,int border,int num){
 	FILE *fp=fopen(url,"rb+");
@@ -344,30 +343,30 @@ int Graybar_yuv420(int width, int height,int ymin,int ymax,int barnum,const char
 // Calculate PSNR between 2 YUV420P file
 // @param url1     Location of first Input YUV file.
 // @param url2     Location of another Input YUV file.
-// @param w        Width of Input YUV file.
-// @param h        Height of Input YUV file.
+// @param width    Width of Input YUV file.
+// @param height   Height of Input YUV file.
 // @param num      Number of frames to process.
 ///////////////////////////////////////////////////////
-int Psnr_yuv420(char *url1,char *url2,int w,int h,int num){
+int Psnr_yuv420(const char *url1,const char *url2,int width,int height,int num){
 	FILE *fp1=fopen(url1,"rb+");
 	FILE *fp2=fopen(url2,"rb+");
-	unsigned char *pic1=(unsigned char *)malloc(w*h);
-	unsigned char *pic2=(unsigned char *)malloc(w*h);
+	unsigned char *pic1=(unsigned char *)malloc(width*height);
+	unsigned char *pic2=(unsigned char *)malloc(width*height);
  
 	for(int i=0;i<num;i++){
-		fread(pic1,1,w*h,fp1);
-		fread(pic2,1,w*h,fp2);
+		fread(pic1,1,width*height,fp1);
+		fread(pic2,1,width*height,fp2);
  
 		double mse_sum=0,mse=0,psnr=0;
-		for(int j=0;j<w*h;j++){
+		for(int j=0;j<width*height;j++){
 			mse_sum+=pow((double)(pic1[j]-pic2[j]),2);
 		}
-		mse=mse_sum/(w*h);
+		mse=mse_sum/(width*height);
 		psnr=10*log10(255.0*255.0/mse);
 		printf("%5.3f\n",psnr);
  
-		fseek(fp1,w*h/2,SEEK_CUR);
-		fseek(fp2,w*h/2,SEEK_CUR);
+		fseek(fp1,width*height/2,SEEK_CUR);
+		fseek(fp2,width*height/2,SEEK_CUR);
  
 	}
  
@@ -377,7 +376,60 @@ int Psnr_yuv420(char *url1,char *url2,int w,int h,int num){
 	fclose(fp2);
 	return 0;
 }
-//  分离RGB24像素数据中的R、G、B分量
+
+///////////////////////////////////////////////////////
+// Split R,G,B planes in RGB24 file
+// @param url      Location of first Input YUV file.
+// @param width    Width of Input YUV file.
+// @param height   Height of Input YUV file.
+// @param num      Number of frames to process.
+///////////////////////////////////////////////////////
+int Split_rgb24(const char *url,int width,int height,int num)
+{
+    FILE *fp = fopen(url,"rb+");
+    if(fp == NULL)
+    {
+       perror("Error opening file");
+       return -1;  
+    }
+    FILE *fp_r = fopen("../../output/basic/pic/output_r.y","wb+");
+    FILE *fp_g = fopen("../../output/basic/pic/output_g.y","wb+");
+    FILE *fp_b = fopen("../../output/basic/pic/output_b.y","wb+");
+    
+    int frames = width * height * 3;
+
+    unsigned char *pic = (unsigned char*)malloc(frames);
+    if (pic == NULL) {
+        perror("Memory allocation failed");  
+        fclose(fp);
+        fclose(fp_r);
+        fclose(fp_g);
+        fclose(fp_b);
+        return -1;
+    }
+
+    for (int i = 0; i < num; i++)
+    {
+        fread(pic,1,frames,fp);
+        for (int j = 0; j < frames; j+=3)
+        {
+            // R
+            fwrite(pic+j,1,1,fp_r);
+            // G
+            fwrite(pic+j+1,1,1,fp_g);
+            // B
+            fwrite(pic+j+2,1,1,fp_b);
+        } 
+    }
+    
+    free(pic);
+    fclose(fp_r);
+    fclose(fp_g);
+    fclose(fp_b);
+    return 0;
+}
+
+
 //  将RGB24格式像素数据封装为BMP图像
 //  将RGB24格式像素数据转换为YUV420P格式像素数据
 //  生成RGB24格式的彩条测试图
@@ -385,12 +437,18 @@ int Psnr_yuv420(char *url1,char *url2,int w,int h,int num){
 
 int main(int argc,char* argv[])
 {
-    // Split_yuv420("../../res/basic/pic/lena_256x256_yuv420p.yuv",256,256,1);
-    // Split_yuv444("../../res/basic/pic/lena_256x256_yuv444p.yuv",256,256,1);
-    // Convert_yuv420_gray("../../res/basic/pic/lena_256x256_yuv420p.yuv",256,256,1);
-    // Halfy_yuv420("../../res/basic/pic/lena_256x256_yuv420p.yuv",256,256,1);
-    // Border_yuv420("../../res/basic/pic/lena_256x256_yuv420p.yuv",256,256,20,1);
-    // Graybar_yuv420(640, 360,0,255,10,"../../res/basic/pic/graybar_640x360.yuv");  x
-    
+    const char *url1 = "../../res/basic/pic/lena_256x256_yuv420p.yuv";
+    const char *url2 = "../../res/basic/pic/lena_256x256_yuv444p.yuv";
+    const char *url3 = "../../res/basic/pic/graybar_640x360.yuv";
+    const char *url4 = "../../res/basic/pic/lena_distort_256x256_yuv420p.yuv";
+    const char *url5 = "../../res/basic/pic/cie1931_500x500.rgb";
+    // Split_yuv420(url1,256,256,1);
+    // Split_yuv444(url2,256,256,1);
+    // Convert_yuv420_gray(url1,256,256,1);
+    // Halfy_yuv420(url1,256,256,1);
+    // Border_yuv420(url1,256,256,20,1);
+    // Graybar_yuv420(640, 360,0,255,10,url3);  
+    // Psnr_yuv420(url1,url4,256,256,1);
+    Split_rgb24(url5,500,500,1);
     return 0;
 }  
