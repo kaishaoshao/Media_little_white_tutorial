@@ -7,10 +7,10 @@
 //  分离YUV420P像素数据中的Y、U、V分量
 //////////////////////////////////////////
 // split Y,U,V planes in YUV420P file
-// @param url       Location of Input YUV file
-// @param width     Width of Input YUV file
-// @param height    Height of Input YUV file
-// @param num       Number of frames to process
+/// @param url       Location of Input YUV file
+/// @param width     Width of Input YUV file
+/// @param height    Height of Input YUV file
+/// @param num       Number of frames to process
 //////////////////////////////////////////
 int Split_yuv420(const char *url,int width,int height,int num)
 {
@@ -71,10 +71,10 @@ int Split_yuv420(const char *url,int width,int height,int num)
 
 //////////////////////////////////////////
 // split Y,U,V planes in YUV444P file
-// @param url       Location of Input YUV file
-// @param width     Width of Input YUV file
-// @param height    Height of Input YUV file
-// @param num       Number of frames to process
+/// @param url       Location of Input YUV file
+/// @param width     Width of Input YUV file
+/// @param height    Height of Input YUV file
+/// @param num       Number of frames to process
 //////////////////////////////////////////
 int Split_yuv444(const char *url,int width,int height,int num)
 {
@@ -135,10 +135,10 @@ int Split_yuv444(const char *url,int width,int height,int num)
 
 //////////////////////////////////////////
 // Convert YUV420P file to gray picture
-// @param url       Location of Input YUV file
-// @param width     Width of Input YUV file
-// @param height    Height of Input YUV file
-// @param num       Number of frames to process
+/// @param url       Location of Input YUV file
+/// @param width     Width of Input YUV file
+/// @param height    Height of Input YUV file
+/// @param num       Number of frames to process
 //////////////////////////////////////////
 int Convert_yuv420_gray(const char *url,int width,int height,int num)
 { 
@@ -183,10 +183,10 @@ int Convert_yuv420_gray(const char *url,int width,int height,int num)
 
 //////////////////////////////////////////
 // Halve Y value of YUV420P file
-// @param url       Location of Input YUV file
-// @param width     Width of Input YUV file
-// @param height    Height of Input YUV file
-// @param num       Number of frames to process
+/// @param url       Location of Input YUV file
+/// @param width     Width of Input YUV file
+/// @param height    Height of Input YUV file
+/// @param num       Number of frames to process
 //////////////////////////////////////////
 int Halfy_yuv420(const char *url, int width, int height,int num){
 	FILE *fp=fopen(url,"rb+");
@@ -230,10 +230,10 @@ int Halfy_yuv420(const char *url, int width, int height,int num){
 
 //////////////////////////////////////////
 // Add border for YUV420P file
-// @param url       Location of Input YUV file
-// @param width     Width of Input YUV file
-// @param height    Height of Input YUV file
-// @param num       Number of frames to process
+/// @param url       Location of Input YUV file
+/// @param width     Width of Input YUV file
+/// @param height    Height of Input YUV file
+/// @param num       Number of frames to process
 //////////////////////////////////////////
 int Border_yuv420(const char *url, int width, int height,int border,int num){
 	FILE *fp=fopen(url,"rb+");
@@ -270,12 +270,12 @@ int Border_yuv420(const char *url, int width, int height,int border,int num){
 
 ///////////////////////////////////////////////
 // Generate YUV420P gray scale bar.
-// @param width    Width of Output YUV file.
-// @param height   Height of Output YUV file.
-// @param ymin     Max value of Y
-// @param ymax     Min value of Y
-// @param barnum   Number of bars
-// @param url_out  Location of Output YUV file.
+/// @param width    Width of Output YUV file.
+/// @param height   Height of Output YUV file.
+/// @param ymin     Max value of Y
+/// @param ymax     Min value of Y
+/// @param barnum   Number of bars
+/// @param url_out  Location of Output YUV file.
 ///////////////////////////////////////////////
 int Graybar_yuv420(int width, int height,int ymin,int ymax,int barnum,const char *url_out){
 	int barwidth;               // 每条灰度条宽度
@@ -341,11 +341,11 @@ int Graybar_yuv420(int width, int height,int ymin,int ymax,int barnum,const char
 
 ///////////////////////////////////////////////////////
 // Calculate PSNR between 2 YUV420P file
-// @param url1     Location of first Input YUV file.
-// @param url2     Location of another Input YUV file.
-// @param width    Width of Input YUV file.
-// @param height   Height of Input YUV file.
-// @param num      Number of frames to process.
+/// @param url1     Location of first Input YUV file.
+/// @param url2     Location of another Input YUV file.
+/// @param width    Width of Input YUV file.
+/// @param height   Height of Input YUV file.
+/// @param num      Number of frames to process.
 ///////////////////////////////////////////////////////
 int Psnr_yuv420(const char *url1,const char *url2,int width,int height,int num){
 	FILE *fp1=fopen(url1,"rb+");
@@ -379,10 +379,10 @@ int Psnr_yuv420(const char *url1,const char *url2,int width,int height,int num){
 
 ///////////////////////////////////////////////////////
 // Split R,G,B planes in RGB24 file
-// @param url      Location of first Input YUV file.
-// @param width    Width of Input YUV file.
-// @param height   Height of Input YUV file.
-// @param num      Number of frames to process.
+/// @param url      Location of first Input RGB file.
+/// @param width    Width of Input RGB file.
+/// @param height   Height of Input RGB file.
+/// @param num      Number of frames to process.
 ///////////////////////////////////////////////////////
 int Split_rgb24(const char *url,int width,int height,int num)
 {
@@ -431,9 +431,139 @@ int Split_rgb24(const char *url,int width,int height,int num)
 
 
 //  将RGB24格式像素数据封装为BMP图像
-//  将RGB24格式像素数据转换为YUV420P格式像素数据
-//  生成RGB24格式的彩条测试图
+///////////////////////////////////////////////////////
+// Split R,G,B planes in RGB24 file
+/// @param url      Location of first Input RGB file.
+/// @param width    Width of Input RGB file.
+/// @param height   Height of Input RGB file.
+/// @param num      Number of frames to process.
+///////////////////////////////////////////////////////
 
+
+
+///////////////////////////////////////////////////////
+// Convert RGB24 file to YUV420P file
+/// @param url_in   Location of first Input RGB file.
+/// @param width    Width of Input RGB file.
+/// @param height   Height of Input RGB file.
+/// @param num      Number of frames to process.
+/// @param url_out  Location of first Output YUV file.
+///////////////////////////////////////////////////////
+
+//
+unsigned char clip_value(unsigned char x,unsigned char min_val,unsigned char max_val)
+{
+    if(x > max_val)
+        return max_val;
+    else if(x < min_val)
+        return min_val;
+    else
+        return x;
+}
+
+bool rgb24_to_yuv420(unsigned char *RgbBuf,int width,int height,unsigned char *yuvBuf)
+{
+    
+}
+
+
+int Convert_rgb24_to_yuv420(const char *url_in,int width,int height,int num,char *url_out)
+{
+
+} 
+
+
+///////////////////////////////////////////////////////
+// Generate RGB24 colorbar
+/// @param width    Width of Output RGB file.
+/// @param height   Height of Output RGB file.
+/// @param url_out      Location of Output RGB file.
+///////////////////////////////////////////////////////
+int Colorbar_rgb24(int height,int width,const char *url)
+{
+    unsigned char *data = NULL;
+    int barwidth;
+    char filename[100] = {0};
+    FILE *fp = NULL;
+
+    int frames = width * height * 3;
+    data = (unsigned char*)malloc(frames);
+    barwidth = height / 8; 
+
+    if((fp=fopen(url,"wb+")) == NULL){
+        printf("Error:Cannot create file!");
+        return -1;
+    }
+
+    for (int i = 0; i < width; i++)
+    {
+        for (int j = 0; j < height; j++)
+        {
+            int barnum = j / barwidth;
+            switch (barnum)
+            {
+            case 0:{
+                data[(i*height+j)*3+0] = 255;
+                data[(i*height+j)*3+1] = 255;
+                data[(i*height+j)*3+2] = 255;
+                break;
+            }
+            case 1:{
+                data[(i*height+j)*3+0] = 255;
+                data[(i*height+j)*3+1] = 255;
+                data[(i*height+j)*3+2] = 0;
+                break;
+            }
+            case 2:{
+                data[(i*height+j)*3+0] = 255;
+                data[(i*height+j)*3+1] = 0;
+                data[(i*height+j)*3+2] = 255;
+                break;
+            }
+            case 3:{
+                data[(i*height+j)*3+0] = 255;
+                data[(i*height+j)*3+1] = 0;
+                data[(i*height+j)*3+2] = 0;
+                break;
+            }
+            case 4:{
+                data[(i*height+j)*3+0] = 0;
+                data[(i*height+j)*3+1] = 255;
+                data[(i*height+j)*3+2] = 255;
+                break;
+            }
+            case 5:{
+                data[(i*height+j)*3+0] = 0;
+                data[(i*height+j)*3+1] = 255;
+                data[(i*height+j)*3+2] = 0;
+                break;
+            }
+            case 7:{
+                data[(i*height+j)*3+0] = 0;
+                data[(i*height+j)*3+1] = 0;
+                data[(i*height+j)*3+2] = 255;
+                break;
+            }
+            case 8:{
+                data[(i*height+j)*3+0] = 0;
+                data[(i*height+j)*3+1] = 0;
+                data[(i*height+j)*3+2] = 0;
+                break;
+            }        
+                
+            default:
+                break;
+            }
+        }
+        
+    }
+    
+    fwrite(data,frames,1,fp);
+    fclose(fp);
+    free(data);
+    
+    return 0;
+}
 
 int main(int argc,char* argv[])
 {
@@ -442,6 +572,8 @@ int main(int argc,char* argv[])
     const char *url3 = "../../res/basic/pic/graybar_640x360.yuv";
     const char *url4 = "../../res/basic/pic/lena_distort_256x256_yuv420p.yuv";
     const char *url5 = "../../res/basic/pic/cie1931_500x500.rgb";
+
+    const char *url6 = "../../output/basic/pic/colorbar_640x360.rgb";
     // Split_yuv420(url1,256,256,1);
     // Split_yuv444(url2,256,256,1);
     // Convert_yuv420_gray(url1,256,256,1);
@@ -449,6 +581,8 @@ int main(int argc,char* argv[])
     // Border_yuv420(url1,256,256,20,1);
     // Graybar_yuv420(640, 360,0,255,10,url3);  
     // Psnr_yuv420(url1,url4,256,256,1);
-    Split_rgb24(url5,500,500,1);
+    // Split_rgb24(url5,500,500,1);
+
+    Colorbar_rgb24(640,360,url6);
     return 0;
 }  
