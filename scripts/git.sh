@@ -25,7 +25,7 @@ if [ $? -ne 0 ]; then
 	exit 1
 fi
 
-
+               
 # 检查是否有未提交的更改
 if ! git diff-index --quiet HEAD --; then
 	echo "uncommitted chages detected.executing the submission ..."

@@ -12,15 +12,12 @@ fi
 mkdir -p "$output_basic"
 
 # Compile the source file
-clang++ -v "$src_basic/yuv.cpp" -o "$output_basic/yuv"
+clang++  "$src_basic/yuv.cpp" -o "$output_basic/yuv"
 
 # Check if the compilation was successful
 if [ $? -eq 0 ]; then
     echo "Compilation successful. Executable is at: $output_basic/yuv"
-
-    ./"$output_basic/yuv"
-    
-    echo "                                  "
+    ./"$output_basic/yuv"   
     echo "**********************************************"
     echo "run $output_basic/yuv successful"
     echo "**********************************************"

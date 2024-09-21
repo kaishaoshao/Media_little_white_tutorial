@@ -97,7 +97,7 @@ Cg 代表 绿色色 色度的分量，是通过 RGB 里面的 G 的值 减去 Y 
 
 [参考知乎博客链接](https://www.zhihu.com/search?type=content&q=YUV420%E5%92%8CYUV444%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F%E8%AF%A6%E8%A7%A3)
 
-![1725428796479](image/basic/1725428796479.png)
+![1726940195208](image/basic/1726940195208.png)
 
 1. l420(属于YUV420 Plannar)
    数据分开存放，先是width * height长度的Y，后面跟着width * height * 0.25长度的U,最后是width * height * 0.25的V
@@ -114,7 +114,6 @@ Cg 代表 绿色色 色度的分量，是通过 RGB 里面的 G 的值 减去 Y 
    YYYY YYYY
    YYYY YYYY
    VVVV UUUU
-
    ```
 3. NV12(属于 YUV 420 Semi-Planar)
    Y 分量单独存放，UV 分量交错存放，UV 在排列的时候，从 U 开始。总长度为 w * h * 1.5。
@@ -132,7 +131,6 @@ Cg 代表 绿色色 色度的分量，是通过 RGB 里面的 G 的值 减去 Y 
    YYYY YYYY
    YYYY YYYY
    VUVU VUVU
-
    ```
 5. l422(属于YUV 422 Plannar)
 
@@ -170,7 +168,6 @@ Cg 代表 绿色色 色度的分量，是通过 RGB 里面的 G 的值 减去 Y 
    YYYY YYYY
    VUVU VUVU
    VUVU VUVU
-
    ```
 9. YUVY（属于 YUV 422 Interleaved）
    YUVY 属于 YUV 422 Interleaved 的一种。事实上，Interleaved 是属于 Packed 的，但是在 422 中，用 Interleaved 更加形象一些。在 Packed 内部，YUV 的排列顺序是 Y U V Y，两个 Y 共用一组 UV。
@@ -235,6 +232,11 @@ Cg 代表 绿色色 色度的分量，是通过 RGB 里面的 G 的值 减去 Y 
 ## YUV和RGB转换
 
     RGB转YUV的过程实际就是把RGB 3分量里面的亮度信息提取出来，放在Y分量中，再把RGB 3分量里面色调，色饱和度信息提取出来分给U和Y分量。
+
+注意：
+
+1) RGB24存储方式是Packed，YUV420P存储方式是Packed。
+2) U，V在水平和垂直方向的取样数是Y的一半
 
 提取Y亮度信息公式如下：
 

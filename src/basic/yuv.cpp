@@ -437,7 +437,7 @@ int Split_rgb24(const char *url,int width,int height,int num)
 /// @param width    Width of Input RGB file.
 /// @param height   Height of Input RGB file.
 /// @param num      Number of frames to process.
-///////////////////////////////////////////////////////
+   
 
 
 
@@ -449,8 +449,7 @@ int Split_rgb24(const char *url,int width,int height,int num)
 /// @param num      Number of frames to process.
 /// @param url_out  Location of first Output YUV file.
 ///////////////////////////////////////////////////////
-
-//
+// 
 unsigned char clip_value(unsigned char x,unsigned char min_val,unsigned char max_val)
 {
     if(x > max_val)
@@ -463,13 +462,63 @@ unsigned char clip_value(unsigned char x,unsigned char min_val,unsigned char max
 
 bool rgb24_to_yuv420(unsigned char *RgbBuf,int width,int height,unsigned char *yuvBuf)
 {
-    
+    unsigned char *prtY, *prtU, *prtV, *prtRGB;
+    unsigned char y, u, v, r, g, b;
+    memset(yuvBuf,0,width * height * 3 / 2);
+    prtY = yuvBuf;
+    prtU = prtY + width * height;
+    prtV = prtU + width * height / 4;
+    for (int i = 0; i < height; i++)
+    {
+        prtRGB = RgbBuf + width * i * 3;
+        for (int j = 0; j < width; j++)
+        {
+            r = *(prtRGB++); // r = *prtRGB ; *prtRGB = *prtRGB->next
+            g = *(prtRGB++);
+            b = *(prtRGB++);
+            y = (unsigned char)((66 * r + 129 * g +  25 * b + 128) >> 8) +  16;
+            u = (unsigned char)((-38 * r - 74 * g + 112 * b + 128) >> 8) + 128;
+            v = (unsigned char)((112 * r - 94 * g -  18 * b + 128) >> 8) + 128;
+
+            *(prtY++) = clip_value(y,0,255);
+            // Y = 2U / y = 2V
+            if(i % 2 == 0 && j % 2 == 0)
+                *(prtU++) = clip_value(u,0,255);
+            else{
+                if(j % 2 == 0)
+                    *(prtV++) = clip_value(v,0,255);
+            }
+
+        }
+        
+    }
+    return true;
 }
 
 
-int Convert_rgb24_to_yuv420(const char *url_in,int width,int height,int num,char *url_out)
+int Convert_rgb24_to_yuv420(const char *url_in,int width,int height,int num,const char *url_out)
 {
+    FILE *fp = fopen(url_in,"rb+");
+    FILE *fp_out = fopen(url_out,"wb+");
 
+    unsigned char *pic_rgb24 = (unsigned char*)malloc(width * height * 3);
+    unsigned char *pic_yuv420 = (unsigned char*)malloc(width * height * 3 / 2);
+
+    int frames = width * height * 3;
+
+    for (int i = 0; i < num; i++)
+    {
+        fread(pic_rgb24,1,frames, fp);
+        rgb24_to_yuv420(pic_rgb24,width,height,pic_yuv420);
+        fwrite(pic_yuv420,1,frames / 2,fp_out);
+    }
+
+    free(pic_rgb24);
+    free(pic_yuv420);
+    fclose(fp);
+    fclose(fp_out);
+    
+    return 0;
 } 
 
 
@@ -572,8 +621,10 @@ int main(int argc,char* argv[])
     const char *url3 = "../../res/basic/pic/graybar_640x360.yuv";
     const char *url4 = "../../res/basic/pic/lena_distort_256x256_yuv420p.yuv";
     const char *url5 = "../../res/basic/pic/cie1931_500x500.rgb";
+    const char *url6 = "../../res/basic/pic/lena_256x256_rgb24.rgb";
 
-    const char *url6 = "../../output/basic/pic/colorbar_640x360.rgb";
+    const char *url_out1 = "../../output/basic/pic/output_lena.yuv";
+    const char *url_out2 = "../../output/basic/pic/colorbar_640x360.rgb";
     // Split_yuv420(url1,256,256,1);
     // Split_yuv444(url2,256,256,1);
     // Convert_yuv420_gray(url1,256,256,1);
@@ -582,7 +633,7 @@ int main(int argc,char* argv[])
     // Graybar_yuv420(640, 360,0,255,10,url3);  
     // Psnr_yuv420(url1,url4,256,256,1);
     // Split_rgb24(url5,500,500,1);
-
-    Colorbar_rgb24(640,360,url6);
+    Convert_rgb24_to_yuv420(url6,256,256,1,url_out1);
+    //Colorbar_rgb24(640,360,url_out2);
     return 0;
 }  

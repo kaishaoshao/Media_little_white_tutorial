@@ -1,4 +1,5 @@
 #!/bin/bash
+output_basic="./output/basic/"
 output_basic_pic="./output/basic/pic/"
 basic_sh="./scripts/basic"  
 
@@ -6,17 +7,35 @@ basic_sh="./scripts/basic"
 if [ "$1" == "--clean" ]; then
   # 如果是 --clean 参数，删除 output_basic_pic 目录下的所有文件
   rm "$output_basic_pic"* -f
-  echo "Cleaned up the $output_basic_pic directory."
+  rm "$output_basic"* -f
+  echo "Cleaned up the $output_basic and $output_basic_pic directory."
+  exit 0
+elif [ "$1" == "--help" ];then
+  echo "This script compiles the program and processes the data"
+  echo "No parameters is compilation"
+  echo "--help : Get Help"
+  echo "--chean: Clear compilation produces data"
+  echo "--look : Viewing the generated data"
+  echo "--yuv  : Start yuvplayer"
+  exit 0
+elif [ "$1" == "--git" ];then 
+  bash ./scripts/git.sh $2
+  exit 0
+elif [ "$1" == "--look" ];then 
+  ls ./output/basic/pic/
+  exit 0
+elif [ "$1" == "--yuv" ];then 
+  ./tools/yuvplayer.exe &
+  exit 0
 else
-  echo "No clean operation requested."
-fi
-
-cd  "$basic_sh"
-# 确保路径正确,脚本是可执行
-if [ -x "yuv.sh" ]; then
-  # 执行脚本
-  bash "yuv.sh"
-else
-  echo "Error: yuv.sh does not exist or is not executable at $basic_sh/yuv.sh"
+  cd  "$basic_sh"
+  # 确保路径正确,脚本是可执行
+  if [ -x "yuv.sh" ]; then
+    # 执行脚本
+    bash "yuv.sh"
+  else
+    echo "Error: yuv.sh does not exist or is not executable at $basic_sh/yuv.sh"
+  fi
+  exit 0
 fi
 
