@@ -17,9 +17,7 @@ elif [ "$1" == "--help" ];then
   echo "--chean: Clear compilation produces data"
   echo "--look : Viewing the generated data"
   echo "--yuv  : Start yuvplayer"
-  exit 0
-elif [ "$1" == "--git" ];then 
-  bash ./scripts/git.sh $2
+  echo "--git  : Update and push code"
   exit 0
 elif [ "$1" == "--look" ];then 
   ls ./output/basic/pic/
@@ -27,6 +25,14 @@ elif [ "$1" == "--look" ];then
 elif [ "$1" == "--yuv" ];then 
   ./tools/yuvplayer.exe &
   exit 0
+elif [ "$1" == "--git" ];then
+  if [ $# -lt 2 ];then 
+    echo "No push messages"
+    exit 1
+  else
+    bash ./scripts/git.sh $2
+    exit 0
+  fi
 else
   cd  "$basic_sh"
   # 确保路径正确,脚本是可执行
