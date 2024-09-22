@@ -17,7 +17,8 @@ elif [ "$1" == "--help" ];then
   echo "--chean: Clear compilation produces data"
   echo "--look : Viewing the generated data"
   echo "--yuv  : Start yuvplayer"
-  echo "--git  : Update and push code"
+  echo "--git  : Update and push code "
+    echo "       |- build.sh --git <message>"
   exit 0
 elif [ "$1" == "--look" ];then 
   ls ./output/basic/pic/

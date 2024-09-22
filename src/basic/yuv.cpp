@@ -430,15 +430,59 @@ int Split_rgb24(const char *url,int width,int height,int num)
 }
 
 
-//  将RGB24格式像素数据封装为BMP图像
 ///////////////////////////////////////////////////////
-// Split R,G,B planes in RGB24 file
-/// @param url      Location of first Input RGB file.
+// Convert RGB24 file to BMP file
+/// @param url_rgb     Location of first Input RGB file.
 /// @param width    Width of Input RGB file.
 /// @param height   Height of Input RGB file.
-/// @param num      Number of frames to process.
-   
+/// @param url_bmp     Location of Output BMP file.
+///////////////////////////////////////////////////////  
+int rgb24_to_bmp(const char *url_rgb,int width,int height,const char *url_bmp)
+{
+    // The Head
+    typedef struct 
+    {
+        long imageSize;
+        long blank;
+        long startPossition;
+    }BmpHead;
 
+    typedef struct 
+    {
+        long Length;
+        long Width;
+        unsigned short colorPlane;
+        unsigned short bitColor;
+        long zipFormat;
+        long realSize;
+        long xPels;
+        long yPels;
+        long colorUse;
+        long colorImportant;
+    }InfoHead;
+    
+    int i = 0,j = 0;
+    BmpHead m_BmpHeader = {0};
+    InfoHead m_BmpInfoHeader = {0};
+    char bfType[2] = {'B','M'};
+    int header_size = sizeof(bfType) + sizeof(BmpHead) + sizeof(InfoHead);
+    unsigned char *rgb24_buffer = NULL;
+    FILE *fp_rgb24 = NULL, *fp_bmp = NULL;
+
+    if((fp_rgb24 = fopen(url_rgb,"rb")) == NULL)
+    {
+        printf("Error: Cannot open output BMP file.\n");   
+    }
+
+    int frames = height * width * 3;
+
+    rgb24_buffer = (unsigned char*) malloc(frames);
+    
+    
+
+    
+
+}
 
 
 ///////////////////////////////////////////////////////
@@ -633,7 +677,7 @@ int main(int argc,char* argv[])
     // Graybar_yuv420(640, 360,0,255,10,url3);  
     // Psnr_yuv420(url1,url4,256,256,1);
     // Split_rgb24(url5,500,500,1);
-    Convert_rgb24_to_yuv420(url6,256,256,1,url_out1);
-    //Colorbar_rgb24(640,360,url_out2);
+    // Convert_rgb24_to_yuv420(url6,256,256,1,url_out1);
+    // Colorbar_rgb24(640,360,url_out2);
     return 0;
 }  
