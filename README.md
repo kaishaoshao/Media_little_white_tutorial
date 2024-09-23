@@ -57,7 +57,7 @@
 * 任务二
   在任务一的基础上完成一个项目(1和2选做)
 
-1. [RtmpPush](https://github.com/xhunmon/RtmpPush) && [AFPlayer](https://github.com/xhunmon/AFPlayer)       		  （应用）
+1. [RtmpPush](https://github.com/xhunmon/RtmpPush) && [AFPlayer](https://github.com/xhunmon/AFPlayer)       		    （应用）
 2. tinymp3 && tinyh264 && tinymp4     (编解码器)
 
 * 任务三（选做）[

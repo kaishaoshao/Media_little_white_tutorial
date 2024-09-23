@@ -450,7 +450,8 @@ int rgb24_to_bmp(const char *url_rgb,int width,int height,const char *url_bmp)
     typedef struct 
     {
         long Length;
-        long Width;
+        long width;
+        long height;
         unsigned short colorPlane;
         unsigned short bitColor;
         long zipFormat;
@@ -461,13 +462,13 @@ int rgb24_to_bmp(const char *url_rgb,int width,int height,const char *url_bmp)
         long colorImportant;
     }InfoHead;
     
-    int i = 0,j = 0;
     BmpHead m_BmpHeader = {0};
     InfoHead m_BmpInfoHeader = {0};
     char bfType[2] = {'B','M'};
     int header_size = sizeof(bfType) + sizeof(BmpHead) + sizeof(InfoHead);
     unsigned char *rgb24_buffer = NULL;
-    FILE *fp_rgb24 = NULL, *fp_bmp = NULL;
+    FILE *fp_rgb24 = NULL;
+    FILE *fp_bmp = NULL;
 
     if((fp_rgb24 = fopen(url_rgb,"rb")) == NULL)
     {
@@ -476,12 +477,44 @@ int rgb24_to_bmp(const char *url_rgb,int width,int height,const char *url_bmp)
 
     int frames = height * width * 3;
 
-    rgb24_buffer = (unsigned char*) malloc(frames);
-    
-    
+    rgb24_buffer = (unsigned char*)malloc(frames);
+    fread(rgb24_buffer,1,frames,fp_rgb24);
 
-    
+    m_BmpHeader.imageSize = frames + header_size;
+    m_BmpHeader.startPossition = header_size;
 
+    m_BmpInfoHeader.Length = sizeof(InfoHead);
+    m_BmpInfoHeader.width = width;
+    
+    // BMP storage pixel data in opposite direction of Y-axis (from bottom to top).
+    m_BmpInfoHeader.height = -height;
+    m_BmpInfoHeader.colorPlane = 1;
+    m_BmpInfoHeader.bitColor = 24;
+    m_BmpInfoHeader.realSize = frames;
+     
+    fwrite(bfType,1,sizeof(bfType),fp_bmp);
+    fwrite(&m_BmpHeader,1,sizeof(m_BmpHeader),fp_bmp);
+    fwrite(&m_BmpInfoHeader,1,sizeof(m_BmpInfoHeader),fp_bmp);
+
+    // BMP save R1|G1|B1,R2|G2|B2 as B1|G1|R1,B2|G2|R2
+	// It saves pixel data in Little Endian
+	// So we change 'R' and 'B'
+    for (int i = 0; i < height; i++)
+    {
+        for (int j = 0; j < width; j++)
+        {
+            char temp = rgb24_buffer[(i*width+j)*3+2];
+            rgb24_buffer[(i*width+j)*3+2] = rgb24_buffer[(i*width+j)*3+0];
+            rgb24_buffer[(i*width+j)*3+0] = temp;  
+        }
+    }
+
+    fwrite(rgb24_buffer,frames,1,fp_bmp);
+    fclose(fp_rgb24);
+    fclose(fp_bmp);
+    free(rgb24_buffer);            
+    // printf("finish generate %s!\n",url_bmp);
+    return 0;
 }
 
 
@@ -538,7 +571,6 @@ bool rgb24_to_yuv420(unsigned char *RgbBuf,int width,int height,unsigned char *y
     }
     return true;
 }
-
 
 int Convert_rgb24_to_yuv420(const char *url_in,int width,int height,int num,const char *url_out)
 {
@@ -667,8 +699,9 @@ int main(int argc,char* argv[])
     const char *url5 = "../../res/basic/pic/cie1931_500x500.rgb";
     const char *url6 = "../../res/basic/pic/lena_256x256_rgb24.rgb";
 
-    const char *url_out1 = "../../output/basic/pic/output_lena.yuv";
-    const char *url_out2 = "../../output/basic/pic/colorbar_640x360.rgb";
+    const char *url_out1 = "../../output/basic/pic/output_lena.bmp";
+    const char *url_out2 = "../../output/basic/pic/output_lena.yuv";
+    const char *url_out3 = "../../output/basic/pic/colorbar_640x360.rgb";
     // Split_yuv420(url1,256,256,1);
     // Split_yuv444(url2,256,256,1);
     // Convert_yuv420_gray(url1,256,256,1);
@@ -677,7 +710,9 @@ int main(int argc,char* argv[])
     // Graybar_yuv420(640, 360,0,255,10,url3);  
     // Psnr_yuv420(url1,url4,256,256,1);
     // Split_rgb24(url5,500,500,1);
-    // Convert_rgb24_to_yuv420(url6,256,256,1,url_out1);
-    // Colorbar_rgb24(640,360,url_out2);
+     rgb24_to_bmp(url6,256,256,url_out1);
+
+    // Convert_rgb24_to_yuv420(url6,256,256,1,url_out2);
+    // Colorbar_rgb24(640,360,url_out3);
     return 0;
 }  

@@ -12,7 +12,7 @@ fi
 mkdir -p "$output_basic"
 
 # Compile the source file
-clang++  "$src_basic/yuv.cpp" -o "$output_basic/yuv"
+clang++  -g "$src_basic/yuv.cpp" -o "$output_basic/yuv"
 
 # Check if the compilation was successful
 if [ $? -eq 0 ]; then
