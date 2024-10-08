@@ -472,7 +472,14 @@ int rgb24_to_bmp(const char *url_rgb,int width,int height,const char *url_bmp)
 
     if((fp_rgb24 = fopen(url_rgb,"rb")) == NULL)
     {
-        printf("Error: Cannot open output BMP file.\n");   
+        printf("Error: Cannot open intput RGB file.\n");  
+        return -1; 
+    }
+
+    if((fp_bmp = fopen(url_bmp,"wb+")) == NULL)
+    {
+        printf("Error: Cannot open output BMP file.\n");
+        return -1;
     }
 
     int frames = height * width * 3;
@@ -491,7 +498,8 @@ int rgb24_to_bmp(const char *url_rgb,int width,int height,const char *url_bmp)
     m_BmpInfoHeader.colorPlane = 1;
     m_BmpInfoHeader.bitColor = 24;
     m_BmpInfoHeader.realSize = frames;
-     
+    
+
     fwrite(bfType,1,sizeof(bfType),fp_bmp);
     fwrite(&m_BmpHeader,1,sizeof(m_BmpHeader),fp_bmp);
     fwrite(&m_BmpInfoHeader,1,sizeof(m_BmpInfoHeader),fp_bmp);
