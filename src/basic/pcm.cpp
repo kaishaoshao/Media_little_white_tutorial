@@ -3,6 +3,8 @@
 #include <string.h>
 #include <math.h>
 
+// 测试音频似乎损坏 
+
 //===----------------------------------------------------------------------===//
 /// @brief Separate the left and right channels of the PCM16LE two-channel sampled data
 //
