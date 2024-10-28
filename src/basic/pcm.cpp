@@ -3,7 +3,16 @@
 #include <string.h>
 #include <math.h>
 
-// 测试音频似乎损坏 
+// 测试音频 NocturneNo2inEflat_44.1k_s16le.pcm 
+// 使用 Audacity 方法
+// 文件->导入->原始数据
+// 编码         : Signed 32-bit PCM
+// 字节序       : 小尾端(little-endian)
+// 声道         : 2声道(立体声)  -> 分离数据为(1)单声道
+// 开始偏移     : 0 字节
+// 总计要导入   : 100  %
+// 采样率       : 44100 Hz 
+
 
 //===----------------------------------------------------------------------===//
 /// @brief Separate the left and right channels of the PCM16LE two-channel sampled data
