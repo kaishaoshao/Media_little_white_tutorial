@@ -517,7 +517,7 @@ int rgb24_to_bmp(const char *url_rgb,int width,int height,const char *url_bmp)
         }
     }
 
-    fwrite(rgb24_buffer,frames,1,fp_bmp);
+    fwrite(rgb24_buffer,frames,1,fp_bmp); 
     fclose(fp_rgb24);
     fclose(fp_bmp);
     free(rgb24_buffer);            

@@ -10,7 +10,7 @@
 /// @return 0/-1
 //===----------------------------------------------------------------------===//
 int Split_pcm16le(const char *url){
-    FILE *fp = fopen(url,"rb");
+    FILE *fp = fopen(url,"rb+");
     FILE *fp_left = fopen("../../output/basic/audio/output_left.pcm","wb+");
     FILE *fp_right = fopen("../../output/basic/audio/output_right.pcm","wb+");
      
@@ -42,7 +42,7 @@ int Split_pcm16le(const char *url){
 int main(int argc,char **argv)
 {
     // 分离PCM16LE双声道采样数据的左声道和右声道
-
+    Split_pcm16le("../../res/basic/audio/NocturneNo2inEflat_44.1k_s16le.pcm");
     // 将PCM16LE双声道音频采样数据中左声道的音量降一半
 
     // 将PCM16LE双声道音频采样数据的声音速度提高一倍
