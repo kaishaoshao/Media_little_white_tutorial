@@ -276,3 +276,5 @@ Y=0.2627R+0.6780G+0.0593B
 
 
 ## PCM
+
+    pcm(Pulse Code Modulation)文件格式是一种常用的未压缩音频文件格式，它
