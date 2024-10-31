@@ -85,6 +85,39 @@ int Halfvolume_pcm16le(const char *url){
     return 0;
 }
 
+//===----------------------------------------------------------------------===//
+/// @brief 
+//
+/// @param  url The path to the input PCM audio file. 
+/// @return 0/-1
+//===----------------------------------------------------------------------===//
+
+int Doublespeed_pcm16le(const char *url){
+    FILE *fp = fopen(url,"rb+");
+    FILE *fp_ds = fopen("../../output/basic/audio/output_ds.pcm","wb+");
+    
+    int cnt = 0;
+    unsigned char *sample = (unsigned char *)malloc(4);
+    while (!feof(fp))       
+    {
+        fread(sample,1,4,fp);
+        if(cnt%2 == 0)
+        {
+            // left
+            fwrite(sample,1,2,fp_ds);
+            // right
+            fwrite(sample+2,1,2,fp_ds);
+        }
+        cnt++;
+    }
+    printf("Sample Cnt:%d\n",cnt);
+    
+    free(sample);
+    fclose(fp);
+    fclose(fp_ds);
+    return 0;
+}
+
 
 int main(int argc,char **argv)
 {
